@@ -216,14 +216,33 @@ sofa_score = st.number_input(
 )
 
 ######################## 4. 数据处理与预测 ########################
-feature_values = ['gender', 'hf', 'prior_bleeding', 'stroke_tia', 'med_status', 'amiodarone', 'metoprolol', 'mech_vent', 'rrt', 'age', 'bmi', 'anion_gap', 'ucr', 'platelets', 'pt', 'tbil', 'wbc', 'dbp', 'hr', 'sbp', 'spo2', 'apsiii', 'sofa_score']    
-features = np.array([feature_values])
+input_data = {
+    'gender': male, 'hf': hf, 'prior_bleeding': prevalentStroke, 
+    'stroke_tia': stroke_tia, 'med_status': med_status, 'amiodarone': amiodarone, 
+    'metoprolol': metoprolol, 'mech_vent': mech_vent, 'rrt': rrt, 
+    'age': age, 'bmi': bmi, 'anion_gap': anion_gap, 'ucr': ucr, 
+    'platelets': platelets, 'pt': pt, 'tbil': tbil, 'wbc': wbc, 
+    'dbp': dbp, 'hr': hr, 'sbp': sbp, 'spo2': spo2, 'apsiii': apsiii, 'sofa_score': sofa_score
+}
 
-# 点击预测按钮后，执行下方所有缩进的代码
+# 2. 转换为 DataFrame (这是解决 XGBoost 报错的关键：自动处理类型)
+features_df = pd.DataFrame([input_data])
+
+# 3. 严格按照训练时的列顺序进行重排 (至关重要)
+features_df = features_df[feature_names]
+
+# --- 加入代码检查点 ---
+st.write("--- Debug: 输入数据检查 ---")
+st.write(f"数据维度: {features_df.shape}")
+st.write(f"数据类型 (应全部为 float/int):")
+st.write(features_df.dtypes) 
+# 如果这里显示有 'object'，说明上面input_data里有变量没有传进去或写错了
+# ---------------------
+
 if st.button("Predict"):
-    # 模型预测
-    predicted_class = model.predict(features)[0] 
-    predicted_proba = model.predict_proba(features)[0] 
+    # 使用处理好的 DataFrame 进行预测
+    predicted_class = model.predict(features_df)[0]
+    predicted_proba = model.predict_proba(features_df)[0]
 
     # 显示预测结果
     st.subheader("Assessment Results")
