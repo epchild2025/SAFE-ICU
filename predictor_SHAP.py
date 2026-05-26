@@ -94,15 +94,15 @@ age = st.number_input(
     min_value=65,     
     max_value=90,   
     value=70,        
-    step=1.0          # 统一为浮点数
+    step=1
 )
 
 # 11. bmi (连续变量：bmi)
 age = st.number_input(
     "What is the patient's bmi?",
-    min_value=0,     
-    max_value=100,   
-    value=20,        
+    min_value=0.0,     
+    max_value=100.0,   
+    value=20.0,        
     step=0.1        # 统一为浮点数
 )
 
