@@ -225,19 +225,11 @@ input_data = {
     'dbp': dbp, 'hr': hr, 'sbp': sbp, 'spo2': spo2, 'apsiii': apsiii, 'sofa_score': sofa_score
 }
 
-# 2. 转换为 DataFrame (这是解决 XGBoost 报错的关键：自动处理类型)
+# 转换为 DataFrame
 features_df = pd.DataFrame([input_data])
 
-# 3. 严格按照训练时的列顺序进行重排 (至关重要)
+# 严格按照训练时的列顺序进行重排
 features_df = features_df[feature_names]
-
-# --- 加入代码检查点 ---
-st.write("--- Debug: 输入数据检查 ---")
-st.write(f"数据维度: {features_df.shape}")
-st.write(f"数据类型 (应全部为 float/int):")
-st.write(features_df.dtypes) 
-# 如果这里显示有 'object'，说明上面input_data里有变量没有传进去或写错了
-# ---------------------
 
 if st.button("Predict"):
     # 使用处理好的 DataFrame 进行预测
@@ -286,7 +278,7 @@ if st.button("Predict"):
 
     # 2. 计算当前患者的 SHAP 值
     # 确保 features 是二维数组，例如 shape 为 (1, 12)
-    shap_values = explainer(features.reshape(1, -1))
+    shap_values = explainer(features_df)
 
     # 3. 绘制并展示瀑布图
     fig, ax = plt.subplots(figsize=(8, 5))
