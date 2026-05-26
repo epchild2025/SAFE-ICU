@@ -29,7 +29,7 @@ st.markdown("Please input the required clinical parameters to generate a **SAFE-
 
 ######################## 3. 特征输入组件 ########################
 #1.gender(0：女性，1：男性) 
-male = st.selectbox(
+gender = st.selectbox(
     "What is the patient's gender?", 
     options = [0,1],
     format_func=lambda x:"Female" if x == 0 else"Male")
@@ -217,7 +217,7 @@ sofa_score = st.number_input(
 
 ######################## 4. 数据处理与预测 ########################
 input_data = {
-    'gender': male, 'hf': hf, 'prior_bleeding': prevalentStroke, 
+    'gender': gender, 'hf': hf, 'prior_bleeding': prior_bledding, 
     'stroke_tia': stroke_tia, 'med_status': med_status, 'amiodarone': amiodarone, 
     'metoprolol': metoprolol, 'mech_vent': mech_vent, 'rrt': rrt, 
     'age': age, 'bmi': bmi, 'anion_gap': anion_gap, 'ucr': ucr, 
