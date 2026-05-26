@@ -219,7 +219,7 @@ sofa_score = st.number_input(
 ######################## 4. 数据处理与预测 ########################
 # 1. 整理输入数据
 input_data = {
-    'gender': male, 'hf': hf, 'prior_bleeding': prior_bleeding, 
+    'gender': gender, 'hf': hf, 'prior_bleeding': prior_bleeding, 
     'stroke_tia': stroke_tia, 'med_status': med_status, 'amiodarone': amiodarone, 
     'metoprolol': metoprolol, 'mech_vent': mech_vent, 'rrt': rrt, 
     'age': age, 'bmi': bmi, 'anion_gap': anion_gap, 'ucr': ucr, 
