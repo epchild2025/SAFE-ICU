@@ -216,8 +216,10 @@ sofa_score = st.number_input(
 )
 
 ######################## 4. 数据处理与预测 ########################
+######################## 4. 数据处理与预测 ########################
+# 1. 整理输入数据
 input_data = {
-    'gender': gender, 'hf': hf, 'prior_bleeding': prior_bleeding, 
+    'gender': male, 'hf': hf, 'prior_bleeding': prior_bleeding, 
     'stroke_tia': stroke_tia, 'med_status': med_status, 'amiodarone': amiodarone, 
     'metoprolol': metoprolol, 'mech_vent': mech_vent, 'rrt': rrt, 
     'age': age, 'bmi': bmi, 'anion_gap': anion_gap, 'ucr': ucr, 
@@ -225,14 +227,12 @@ input_data = {
     'dbp': dbp, 'hr': hr, 'sbp': sbp, 'spo2': spo2, 'apsiii': apsiii, 'sofa_score': sofa_score
 }
 
-# 转换为 DataFrame
-features_df = pd.DataFrame([input_data])
+# 2. 转换为 DataFrame 并重排（这是最稳妥的预测路径）
+features_df = pd.DataFrame([input_data])[feature_names]
 
-# 严格按照训练时的列顺序进行重排
-features_df = features_df[feature_names]
-
+# 3. 预测按钮逻辑
 if st.button("Predict"):
-    # 使用处理好的 DataFrame 进行预测
+    # 模型预测
     predicted_class = model.predict(features_df)[0]
     predicted_proba = model.predict_proba(features_df)[0]
 
