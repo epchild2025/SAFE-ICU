@@ -53,14 +53,16 @@ stroke_tia = st.selectbox(
     format_func=lambda x:"No" if x == 0 else"Yes")
 
 #5.med_status(0：没有使用任何抗凝或抗板药物，1：仅使用了阿司匹林或氯吡格雷，2：使用了抗凝药物（华法林/利伐沙班/达比加群/艾多沙班/阿哌沙班) 
+MED_OPTIONS = {
+    0: "None",
+    1: "Antiplatelet only",
+    2: "Anticoagulant"
+}
 med_status = st.selectbox(
     "Anticoagulation or Antiplatelet Therapy",
-    options=[0, 1, 2],
-    format_func=lambda x: {
-        0: "None (No anticoagulant or antiplatelet therapy)",
-        1: "Antiplatelet only (e.g., Aspirin, Clopidogrel)",
-        2: "Anticoagulant (e.g., Warfarin, Rivaroxaban, Dabigatran, etc.)"
-    })
+    options=list(MED_OPTIONS.keys()),
+    format_func=lambda x: MED_OPTIONS.get(x, "Unknown") # 使用 .get() 更安全
+)
 
 #6.amiodarone(0：未使用胺碘酮，1：使用过胺碘酮） 
 amiodarone = st.selectbox(
