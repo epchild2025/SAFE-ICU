@@ -235,8 +235,12 @@ sofa_score = st.number_input(
     step=1
 )
 ######################## 4. 数据处理与预测 ########################
-feature_values = ['gender', 'hf', 'prior_bleeding', 'stroke_tia', 'med_status', 'amiodarone', 'metoprolol', 'mech_vent', 'rrt', 'age', 'bmi', 'anion_gap', 'ucr', 'platelets', 'pt', 'tbil', 'wbc', 'dbp', 'hr', 'sbp', 'spo2', 'apsiii', 'sofa_score', 'copd', 'htn', 'hemoglobin']    
-features = np.array([feature_values])
+features_list = [male, hf, prior_bleeding, stroke_tia, med_status, amiodarone, metoprolol, 
+                 mech_vent, rrt, age, bmi, anion_gap, ucr, platelets, pt, tbil, wbc, 
+                 dbp, hr, sbp, spo2, apsiii, sofa_score, copd, htn, hemoglobin]
+
+# 转换为 DataFrame (重要！模型需要列名匹配，如果你的模型是用 DataFrame 训练的)
+features = pd.DataFrame([features_list], columns=feature_names)
 
 # 点击预测按钮后，执行下方所有缩进的代码
 if st.button("Predict"):
