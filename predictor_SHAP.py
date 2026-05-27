@@ -29,7 +29,7 @@ st.markdown("Please input the required clinical parameters to generate a **SAFE-
 
 ######################## 3. 特征输入组件 ########################
 #1.gender(0：女性，1：男性) 
-male = st.selectbox(
+gender = st.selectbox(
     "What is the patient's gender?", 
     options = [0,1],
     format_func=lambda x:"Female" if x == 0 else"Male")
@@ -44,7 +44,7 @@ age = st.number_input(
 )
 
 # 3. bmi (连续变量：bmi)
-age = st.number_input(
+bmi = st.number_input(
     "What is the patient's bmi?",
     min_value=0.0,     
     max_value=100.0,   
@@ -107,7 +107,7 @@ hf = st.selectbox(
     format_func=lambda x:"No" if x == 0 else"Yes")
 
 # 11. prior_bleeding(0：不合并出血，1：合并出血) 
-prevalentStroke = st.selectbox(
+prior_bleeding = st.selectbox(
     "Prior Bleeding Status", 
     options = [0,1],
     format_func=lambda x:"No" if x == 0 else"Yes")
@@ -182,7 +182,7 @@ platelets = st.number_input(
 )
 
 # 21. pt(连续变量：凝血酶原时间)
-platelets = st.number_input(
+pt = st.number_input(
     "What is the patient's prothrombin time (s)?",
     min_value=0.0,     
     max_value=100.0,   
