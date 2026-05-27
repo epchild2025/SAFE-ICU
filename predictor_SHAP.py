@@ -235,7 +235,7 @@ sofa_score = st.number_input(
     step=1
 )
 ######################## 4. 数据处理与预测 ########################
-features_list = [male, hf, prior_bleeding, stroke_tia, med_status, amiodarone, metoprolol, 
+features_list = [gender, hf, prior_bleeding, stroke_tia, med_status, amiodarone, metoprolol, 
                  mech_vent, rrt, age, bmi, anion_gap, ucr, platelets, pt, tbil, wbc, 
                  dbp, hr, sbp, spo2, apsiii, sofa_score, copd, htn, hemoglobin]
 
