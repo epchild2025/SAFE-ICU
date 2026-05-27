@@ -283,7 +283,7 @@ if st.button("Predict"):
 
     # 2. 计算当前患者的 SHAP 值
     # 确保 features 是二维数组，例如 shape 为 (1, 12)
-   shap_values = explainer(features_df)
+    shap_values = explainer(features_df)
 
     # 3. 绘制并展示瀑布图
     fig, ax = plt.subplots(figsize=(8, 5))
