@@ -233,7 +233,7 @@ features_list = [gender, hf, prior_bleeding, stroke_tia, med_status, amiodarone,
                  dbp, hr, sbp, spo2, apsiii, sofa_score, copd, htn, hemoglobin]
 
 # 转换为 DataFrame (重要！模型需要列名匹配，如果你的模型是用 DataFrame 训练的)
-features = pd.DataFrame([features_list], columns=feature_names)
+features_df = pd.DataFrame([features_list], columns=feature_names)
 
 # 点击预测按钮后，执行下方所有缩进的代码
 if st.button("Predict"):
@@ -292,7 +292,7 @@ if st.button("Predict"):
     # 假设你想解释的是“高心脏病风险” (通常对应索引 1)
     # 如果是 XGBoost，shap_values 可能直接是一维的；如果是 RandomForest，可能需要取 shap_values[0, :, 1]
     # 这里以最常见的标准输出为例 (取第0个样本)：
-    shap.plots.waterfall(shap_values[0], max_display=12, show=False) # max_display=特征变量数
+    shap.plots.waterfall(shap_values[0, :, 1], max_display=12, show=False)
 
     # 将 matplotlib 图像传递给 Streamlit 显示
     st.pyplot(fig)
