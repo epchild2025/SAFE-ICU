@@ -238,8 +238,8 @@ features_df = pd.DataFrame([features_list], columns=feature_names)
 # 点击预测按钮后，执行下方所有缩进的代码
 if st.button("Predict"):
     # 模型预测
-    predicted_class = model.predict(features)[0] 
-    predicted_proba = model.predict_proba(features)[0] 
+    predicted_class = model.predict(features_df)[0] 
+    predicted_proba = model.predict_proba(features_df)[0]
 
     # 显示预测结果
     st.subheader("Assessment Results")
