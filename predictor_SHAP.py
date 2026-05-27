@@ -96,7 +96,7 @@ copd = st.selectbox(
 
 # 9. htn(分类变量：高血压：0：不合并高血压，1：合并高血压)
 htn = st.selectbox(
-    "COPD Status",
+    "Hypertension Status",
     options=[0, 1],
     format_func=lambda x: "No" if x == 0 else "Yes")
 
