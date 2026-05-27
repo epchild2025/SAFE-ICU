@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 24 19:26:01 2026
-
-@author: LENOVO
-"""
-
 import pandas as pd
 import numpy as np
 import streamlit as st
@@ -290,7 +283,7 @@ if st.button("Predict"):
 
     # 2. 计算当前患者的 SHAP 值
     # 确保 features 是二维数组，例如 shape 为 (1, 12)
-    shap_values = explainer(features.reshape(1, -1))
+   shap_values = explainer(features_df)
 
     # 3. 绘制并展示瀑布图
     fig, ax = plt.subplots(figsize=(8, 5))
