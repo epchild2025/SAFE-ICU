@@ -94,7 +94,6 @@ metoprolol = st.selectbox(
 # 9. ucr (连续变量：尿素氮与肌酐比值)
 ucr = st.number_input(
     "What is the patient's ucr?",
-    "What is the patient's BUN/Cr ratio (UCR)?",
     min_value=0.0,     
     max_value=200.0,   
     value=20.0,        
