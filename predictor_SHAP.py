@@ -11,13 +11,13 @@ import matplotlib.pyplot as plt
 # 加载训练好的最佳模型
 model = joblib.load('xgb_model.pkl')
 
-# 【关键修复】: 动态获取模型训练时的确切特征名称，避免手动硬编码导致的大小写或拼写不匹配
-try:
-    # 针对 scikit-learn API (XGBClassifier 等)
-    expected_feature_names = model.feature_names_in_
-except AttributeError:
-    # 针对原生 XGBoost API
-    expected_feature_names = model.get_booster().feature_names
+# 定义特征名称(与模型训练时的列名严格对应)
+feature_names = [
+    'gender', 'hf', 'prior_bleeding', 'stroke_tia', 'med_status', 'amiodarone', 
+    'metoprolol', 'mech_vent', 'rrt', 'age', 'bmi', 'anion_gap', 'ucr', 
+    'platelets', 'pt', 'tbil', 'wbc', 'dbp', 'hr', 'sbp', 'spo2', 'apsiii', 
+    'sofa_score', 'copd', 'htn', 'hemoglobin'
+]
 
 ######################## 2. Streamlit 页面配置 ########################
 st.set_page_config(page_title="SAFE-ICU Predictor", layout="wide") 
@@ -26,7 +26,76 @@ st.subheader("Survival Assessment for Elderly Atrial Fibrillation Patients in th
 st.markdown("Please input the required clinical parameters to generate a **SAFE-ICU** 1-year mortality risk assessment.")
 
 ######################## 3. 特征输入组件 ########################
-# 1. age (连续变量：年龄)
+
+# 1. gender (0: Female, 1: Male)
+gender = st.selectbox(
+    "What is the patient's gender?", 
+    options=[0, 1],
+    format_func=lambda x: "Female" if x == 0 else "Male"
+)
+
+# 2. hf (0: No, 1: Yes) 
+hf = st.selectbox(
+    "Heart Failure (HF) Status", 
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 3. prior_bleeding (0: No, 1: Yes) 
+prior_bleeding = st.selectbox(
+    "Prior Bleeding Status", 
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 4. stroke_tia (0: No, 1: Yes)
+stroke_tia = st.selectbox(
+    "Stroke or TIA Status", 
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 5. med_status
+MED_OPTIONS = {
+    0: "None",
+    1: "Antiplatelet only",
+    2: "Anticoagulant"
+}
+med_status = st.selectbox(
+    "Anticoagulation or Antiplatelet Therapy",
+    options=list(MED_OPTIONS.keys()),
+    format_func=lambda x: MED_OPTIONS.get(x, "Unknown")
+)
+
+# 6. amiodarone (0: No, 1: Yes) 
+amiodarone = st.selectbox(
+    "Amiodarone Use",
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 7. metoprolol (0: No, 1: Yes)
+metoprolol = st.selectbox(
+    "Metoprolol Use",
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 8. mech_vent (0: No, 1: Yes)
+mech_vent = st.selectbox(
+    "Machine ventilation Use",
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 9. rrt (0: No, 1: Yes)
+rrt = st.selectbox(
+    "Renal Replacement Therapy",
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 10. age
 age = st.number_input(
     "What is the patient's age?",
     min_value=65,     
@@ -35,127 +104,161 @@ age = st.number_input(
     step=1
 )
 
-# 2. bmi (连续变量：bmi)
+# 11. bmi
 bmi = st.number_input(
-    "What is the patient's bmi?",
+    "What is the patient's BMI?",
     min_value=0.0,     
     max_value=100.0,   
     value=20.0,        
-    step=0.1        
+    step=0.1
 )
 
-# 3. sbp(连续变量：收缩压)
-sbp = st.number_input(
-    "What is the patient's systolic blood presssure (mmHg)?",
-    min_value=20,     
-    max_value=300,   
-    value=120,        
-    step=1
+# 12. anion_gap
+anion_gap = st.number_input(
+    "What is the patient's anion gap (mmol/L)?",
+    min_value=0,     
+    max_value=30,   
+    value=15,        
+    step=1            
 )
 
-# 4. dbp(连续变量：舒张压)
-dbp = st.number_input(
-    "What is the patient's diastolic blood presssure (mmHg)?",
-    min_value=20,     
-    max_value=200,   
-    value=70,        
-    step=1
-)
-
-# 5. hf(0：没有合并心衰，1：合并心衰) 
-hf = st.selectbox(
-    "Heart Failure (HF) Status", 
-    options=[0, 1],
-    format_func=lambda x: "No" if x == 0 else "Yes"
-)
-
-# 6. stroke_tia (0：没有合并脑卒中，1：合并脑卒中)
-stroke_tia = st.selectbox(
-    "Stroke or TIA Status", 
-    options=[0, 1],
-    format_func=lambda x: "No" if x == 0 else "Yes"
-)
-
-# 7. med_status
-MED_OPTIONS = {
-    0: "None",
-    1: "Antiplatelet only",
-    2: "Anticogulation"
-}
-med_status = st.selectbox(
-    "Anticoagulation or Antiplatelet Therapy",
-    options=list(MED_OPTIONS.keys()),
-    format_func=lambda x: MED_OPTIONS.get(x, "Unknown")
-)
-
-# 8. metoprolol(0：未使用美托洛尔，1：使用过美托洛尔)
-metoprolol = st.selectbox(
-    "Metoprolol Use",
-    options=[0, 1],
-    format_func=lambda x: "No" if x == 0 else "Yes"
-)
-
-# 9. ucr (连续变量：尿素氮与肌酐比值)
+# 13. ucr
 ucr = st.number_input(
-    "What is the patient's ucr?",
+    "What is the patient's BUN/Cr ratio (UCR)?",
     min_value=0.0,     
     max_value=200.0,   
     value=20.0,        
     step=0.1          
 )
 
-# 10. anion_gap (连续变量：阴离子间隙)
-anion_gap = st.number_input(
-    "What is the patient's anion gap (mmol/L)?",
-    min_value=0,     
-    max_value=30,   
-    value=15,        
-    step=1                     
-)
-
-# 11. platelets(连续变量：血小板)
+# 14. platelets
 platelets = st.number_input(
     "What is the patient's platelet count (10⁹/L)?",
     min_value=0.0,     
-    max_value=500.0,
-    value=150.0,
+    max_value=500.0,   
+    value=200.0,        
     step=1.0        
 )
 
-# 12. mech_vent(0：未进行过机械通气，1：进行过机械通气)
-mech_vent = st.selectbox(
-    "Machine ventilation Use",
-    options=[0, 1],
-    format_func=lambda x: "No" if x == 0 else "Yes"
+# 15. pt
+pt = st.number_input(
+    "What is the patient's prothrombin time (s)?",
+    min_value=0.0,     
+    max_value=100.0,   
+    value=13.0,        
+    step=0.1 
 )
 
-# 13. apsiii(连续变量：apsiii评分)
+# 16. tbil
+tbil = st.number_input(
+    "What is the patient's total bilirubin (μmol/L)?",
+    min_value=0.0,     
+    max_value=10.0,   
+    value=3.0,        
+    step=0.1 
+)
+
+# 17. wbc
+wbc = st.number_input(
+    "What is the patient's blood white cell count (10⁹/L)?",
+    min_value=0.0,     
+    max_value=100.0,   
+    value=8.0,        
+    step=0.1 
+)
+
+# 18. dbp
+dbp = st.number_input(
+    "What is the patient's diastolic blood pressure (mmHg)?",
+    min_value=20,     
+    max_value=200,   
+    value=70,        
+    step=1
+)
+
+# 19. hr
+hr = st.number_input(
+    "What is the patient's heart rate (bpm)?",
+    min_value=0,     
+    max_value=200,   
+    value=70,        
+    step=1
+)
+
+# 20. sbp
+sbp = st.number_input(
+    "What is the patient's systolic blood pressure (mmHg)?",
+    min_value=20,     
+    max_value=300,   
+    value=120,        
+    step=1
+)
+
+# 21. spo2
+spo2 = st.number_input(
+    "What is the patient's SpO2 (%)?",
+    min_value=0,     
+    max_value=100,   
+    value=98,        
+    step=1
+)
+
+# 22. apsiii
 apsiii = st.number_input(
-    "What is the patient's apsiii score?",
+    "What is the patient's APS III score?",
     min_value=0,     
     max_value=110,   
     value=45,        
     step=1
 )
 
-# 14. sofa_score
+# 23. sofa_score
 sofa_score = st.number_input(
-    "What is the patient's sofa score?",
+    "What is the patient's SOFA score?",
     min_value=0,     
     max_value=12,   
     value=2,        
     step=1
 )
 
+# 24. copd (0: No, 1: Yes)
+copd = st.selectbox(
+    "COPD Status",
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 25. htn (0: No, 1: Yes)
+htn = st.selectbox(
+    "Hypertension Status",
+    options=[0, 1],
+    format_func=lambda x: "No" if x == 0 else "Yes"
+)
+
+# 26. hemoglobin
+hemoglobin = st.number_input(
+    "What is the patient's hemoglobin (g/L)?",
+    min_value=0.0,     
+    max_value=20.0,   
+    value=10.0,        
+    step=0.1
+)
+
 ######################## 4. 数据处理与预测 ########################
+
+# 确保这里的变量顺序与 feature_names 严格一致
+features_list = [
+    gender, hf, prior_bleeding, stroke_tia, med_status, amiodarone, 
+    metoprolol, mech_vent, rrt, age, bmi, anion_gap, ucr, 
+    platelets, pt, tbil, wbc, dbp, hr, sbp, spo2, apsiii, 
+    sofa_score, copd, htn, hemoglobin
+]
+
+# 转换为 DataFrame 格式，保留特征列名
+features_df = pd.DataFrame([features_list], columns=feature_names)
+
 # 点击预测按钮后执行逻辑
 if st.button("Predict"):
-    
-    # 确保此处的变量顺序与模型训练时的列顺序绝对一致！
-    features_list = [age, bmi, sbp, dbp, hf, stroke_tia, med_status, metoprolol, ucr, anion_gap, platelets, mech_vent, apsiii, sofa_score]
-
-    # 【关键修复】: 使用直接从模型中提取的确切列名
-    features_df = pd.DataFrame([features_list], columns=expected_feature_names)
     
     # 提取模型预测结果
     predicted_class = model.predict(features_df)[0] 
