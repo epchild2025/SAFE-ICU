@@ -2,7 +2,7 @@ pandas
 numpy
 matplotlib
 scikit-learn
-xgboost
+lightgbm
 shap
 statsmodels
 joblib
