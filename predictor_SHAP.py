@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 ######################## 1. 基础配置 ########################
 # 加载训练好的最佳模型
-model = joblib.load('xgb_model.pkl')
+model = joblib.load('lgb_model.pkl')
 
 # 定义特征名称(与模型训练时的列名严格对应)
 feature_names = [
